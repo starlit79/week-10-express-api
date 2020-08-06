@@ -49,13 +49,14 @@ app.post('/', async (apiRequest, apiResponse) => {
 });
 
 app.post('/', async (apiRequest, apiResponse) => {
-  const newlogo = apiRequest.body;
-  await createlogo(newlogo);
+  const newLogo = apiRequest.body;
+  await createLogo(newLogo);
   apiResponse.send({
     message: 'New logo created.',
-    alllogo: await getlogos(),
+    allLogo: await getlogos(),
   });
 });
+
 // endpoint to delete a product
 app.delete('/:productId', async (apiRequest, apiResponse) => {
   await deleteProduct(apiRequest.params.productId);
@@ -63,7 +64,7 @@ app.delete('/:productId', async (apiRequest, apiResponse) => {
 });
 
 app.delete('/:logoId', async (apiRequest, apiResponse) => {
-  await deletelogo(apiRequest.params.logoId);
+  await deleteLogo(apiRequest.params.logoId);
   apiResponse.send({ message: 'logo deleted.' });
 });
 // endpoint to update a product
@@ -83,12 +84,13 @@ app.put('/:id', async (apiRequest, apiResponse) => {
 // https://www.mongodb.com/
 startDatabase().then(async () => {
   await createProduct({ title: 'In-memory mongo database for debugging and testing is now running!' });
+})
 
 startDatabase().then(async () => {
   await createLogo({ title: 'In-memory mongo database for debugging and testing is now running!' });
+})
   
   // start the server after the database starts
   app.listen(3001, async () => {
     console.log('Web server has started on port 3001 http://localhost:3001');
   });
-});
