@@ -21,3 +21,11 @@ Content-Type: application/json
 {
   "title": "Testing"
 }
+
+### Logos
+
+GET http://localhost:3001/logos
+
+### Products
+
+GET http://localhost:3001/products

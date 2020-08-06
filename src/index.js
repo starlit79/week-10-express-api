@@ -1,13 +1,38 @@
 // ./src/index.js
 
 //importing the dependencies
-const { app, startDatabase, getProducts, deleteProduct, updateProduct, createProduct } = require('./app-common.js')
+const {
+  app,
+  createLogo,
+  createProduct,
+  deleteLogo,
+  deleteProduct,
+  getLogos,
+  getProducts,
+  startDatabase,
+  updateLogo,
+  updateProduct,
+} = require('./app-common.js')
 
 
 // endpoint to return all products
 // sets up the handler for requests to "/"
 // much like a switch statement
 app.get('/', async (req, res) => {
+  res.send('<a href="/products">products</a> | <a href="/logos">logos</a>');
+});
+
+app.get('/products', async (req, res) => {
+  res.send(await getProducts());
+});
+
+/*"urls": [ 
+  "/products", 
+  "/logos"
+]
+  */ 
+
+app.get('/logos', async (req, res) => {
   res.send(await getProducts());
 });
 
@@ -20,16 +45,27 @@ app.post('/', async (apiRequest, apiResponse) => {
   apiResponse.send({
     message: 'New product created.',
     allProduct: await getProducts(),
-    thanks: true
   });
 });
 
+app.post('/', async (apiRequest, apiResponse) => {
+  const newlogo = apiRequest.body;
+  await createlogo(newlogo);
+  apiResponse.send({
+    message: 'New logo created.',
+    alllogo: await getlogos(),
+  });
+});
 // endpoint to delete a product
 app.delete('/:productId', async (apiRequest, apiResponse) => {
   await deleteProduct(apiRequest.params.productId);
   apiResponse.send({ message: 'Product deleted.' });
 });
 
+app.delete('/:logoId', async (apiRequest, apiResponse) => {
+  await deletelogo(apiRequest.params.logoId);
+  apiResponse.send({ message: 'logo deleted.' });
+});
 // endpoint to update a product
 app.put('/:id', async (apiRequest, apiResponse) => {
   const updatedProduct = apiRequest.body;
@@ -37,11 +73,20 @@ app.put('/:id', async (apiRequest, apiResponse) => {
   apiResponse.send({ message: 'Product updated.' });
 });
 
+app.put('/:id', async (apiRequest, apiResponse) => {
+  const updatedLogo = apiRequest.body;
+  await updateLogo(apiRequest.params.id, updatedLogo);
+  apiResponse.send({ message: 'Logo updated.' });
+});
+
 // start the in-memory MongoDB instance first
 // https://www.mongodb.com/
 startDatabase().then(async () => {
   await createProduct({ title: 'In-memory mongo database for debugging and testing is now running!' });
 
+startDatabase().then(async () => {
+  await createLogo({ title: 'In-memory mongo database for debugging and testing is now running!' });
+  
   // start the server after the database starts
   app.listen(3001, async () => {
     console.log('Web server has started on port 3001 http://localhost:3001');
